@@ -18,16 +18,16 @@ import Paper from '@mui/material/Paper';
 
 
 
-function ListUsers() {
+function ListOrganizadores() {
   // constante criada para receber a lista usúario da nossa API
-  const [users, setUser] = useState([]);
+  const [organizadores, setOrganizadores] = useState([]);
 
   //Função para criar a chamada da API
-  async function getUsers() {
-    await api.getUsers().then(
+  async function getOrganizadores() {
+    await api.getOrganizadores().then(
       (response) => {
         console.log(response);
-        setUser(response.data.users);
+        setOrganizadores(response.data.organizadores);
       },
       (error) => {
         console.log(error)
@@ -35,14 +35,14 @@ function ListUsers() {
     );
   }
   useEffect(() => {
-    getUsers();
+    getOrganizadores();
   }, []);
 
-  const listUsers = users.map((user) => {
+  const ListOrganizadores = organizadores.map((organizador) => {
     return(
         <TableRow>
-            <TableCell align="center">{user.nome}</TableCell>
-            <TableCell align="center">{user.email}</TableCell>
+            <TableCell align="center">{organizador.nome}</TableCell>
+            <TableCell align="center">{organizador.email}</TableCell>
             <TableCell align="center">Apagar</TableCell>
 
         </TableRow>
@@ -60,10 +60,10 @@ function ListUsers() {
                     <TableCell align="center"></TableCell>
                 </TableRow>
             </TableHead>
-            <TableBody>{listUsers}</TableBody>
+            <TableBody>{ListOrganizadores}</TableBody>
         </Table>
       </TableContainer>
     </div>
   );
 }
-export default ListUsers;
+export default ListOrganizadores;

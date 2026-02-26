@@ -18,16 +18,16 @@ import Paper from '@mui/material/Paper';
 
 
 
-function ListUsers() {
+function ListIngressos() {
   // constante criada para receber a lista usúario da nossa API
-  const [users, setUser] = useState([]);
+  const [ingressos, setIngressos] = useState([]);
 
   //Função para criar a chamada da API
-  async function getUsers() {
-    await api.getUsers().then(
+  async function getIngressos() {
+    await api.getIngressos().then(
       (response) => {
         console.log(response);
-        setUser(response.data.users);
+        setIngressos(response.data.ingresso);
       },
       (error) => {
         console.log(error)
@@ -35,14 +35,14 @@ function ListUsers() {
     );
   }
   useEffect(() => {
-    getUsers();
+    getIngressos();
   }, []);
 
-  const listUsers = users.map((user) => {
+  const ListIngressos = ingresso.map((ingresso) => {
     return(
         <TableRow>
-            <TableCell align="center">{user.nome}</TableCell>
-            <TableCell align="center">{user.email}</TableCell>
+            <TableCell align="center">{ingresso.preco}</TableCell>
+            <TableCell align="center">{ingresso.tipo}</TableCell>
             <TableCell align="center">Apagar</TableCell>
 
         </TableRow>
@@ -60,10 +60,10 @@ function ListUsers() {
                     <TableCell align="center"></TableCell>
                 </TableRow>
             </TableHead>
-            <TableBody>{listUsers}</TableBody>
+            <TableBody>{ListIngressos}</TableBody>
         </Table>
       </TableContainer>
     </div>
   );
 }
-export default ListUsers;
+export default ListIngressos;

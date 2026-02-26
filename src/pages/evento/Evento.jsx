@@ -18,16 +18,14 @@ import Paper from '@mui/material/Paper';
 
 
 
-function ListUsers() {
-  // constante criada para receber a lista usúario da nossa API
-  const [users, setUser] = useState([]);
+function ListEventos() {
+  const [eventos, setEventos] = useState([]);
 
-  //Função para criar a chamada da API
-  async function getUsers() {
-    await api.getUsers().then(
+  async function getEventos() {
+    await api.getEventos().then(
       (response) => {
         console.log(response);
-        setUser(response.data.users);
+        setEventos(response.data.events);
       },
       (error) => {
         console.log(error)
@@ -35,19 +33,18 @@ function ListUsers() {
     );
   }
   useEffect(() => {
-    getUsers();
+    getEventos();
   }, []);
 
-  const listUsers = users.map((user) => {
-    return(
-        <TableRow>
-            <TableCell align="center">{user.nome}</TableCell>
-            <TableCell align="center">{user.email}</TableCell>
-            <TableCell align="center">Apagar</TableCell>
+    const listEventos = eventos.map((events) =>{
+      return(
+    <TableRow>
+      <TableCell align="center">{events.nome}</TableCell>
+      <TableCell align="center">{events.fk_id_organizador}</TableCell>
+      <TableCell align="center">Apagar</TableCell>
 
-        </TableRow>
-    )
-  })
+    </TableRow>
+  )})
 
   return (
     <div>
@@ -55,15 +52,15 @@ function ListUsers() {
         <Table size="small" arial-label="a dense table">
             <TableHead style={{backgroundColor:"red",borderStyle:"solid"}}>
                 <TableRow>
-                    <TableCell align="center"> NOME</TableCell>
-                    <TableCell align="center"> EMAIL</TableCell>
+                    <TableCell align="center"> Nome do Evento</TableCell>
+                    <TableCell align="center"> id organizador</TableCell>
                     <TableCell align="center"></TableCell>
                 </TableRow>
             </TableHead>
-            <TableBody>{listUsers}</TableBody>
+            <TableBody>{listEventos}</TableBody>
         </Table>
       </TableContainer>
     </div>
   );
 }
-export default ListUsers;
+export default ListEventos;

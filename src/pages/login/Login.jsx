@@ -31,7 +31,7 @@ function Login() {
       alert("O servidor disse: " + response.data.message)
       return navigate("home");
     } catch (error){
-      alert("Erro: " + error.response.data.error)
+      alert("Erro: " + error.response)
       
     }
   };

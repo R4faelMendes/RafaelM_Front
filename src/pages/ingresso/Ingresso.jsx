@@ -19,15 +19,13 @@ import Paper from '@mui/material/Paper';
 
 
 function ListIngressos() {
-  // constante criada para receber a lista usúario da nossa API
   const [ingressos, setIngressos] = useState([]);
 
-  //Função para criar a chamada da API
   async function getIngressos() {
     await api.getIngressos().then(
       (response) => {
         console.log(response);
-        setIngressos(response.data.ingresso);
+        setIngressos(response.data.ingressos);
       },
       (error) => {
         console.log(error)
@@ -37,17 +35,16 @@ function ListIngressos() {
   useEffect(() => {
     getIngressos();
   }, []);
+  console.log("ingressos:", ingressos);
+    const listIngressos = ingressos.map((ingress) =>{
+      return(
+    <TableRow>
+      <TableCell align="center">{ingress.preco}</TableCell>
+      <TableCell align="center">{ingress.tipo}</TableCell>
+      <TableCell align="center">Apagar</TableCell>
 
-  const ListIngressos = ingresso.map((ingresso) => {
-    return(
-        <TableRow>
-            <TableCell align="center">{ingresso.preco}</TableCell>
-            <TableCell align="center">{ingresso.tipo}</TableCell>
-            <TableCell align="center">Apagar</TableCell>
-
-        </TableRow>
-    )
-  })
+    </TableRow>
+  )})
 
   return (
     <div>
@@ -55,12 +52,12 @@ function ListIngressos() {
         <Table size="small" arial-label="a dense table">
             <TableHead style={{backgroundColor:"red",borderStyle:"solid"}}>
                 <TableRow>
-                    <TableCell align="center"> NOME</TableCell>
-                    <TableCell align="center"> EMAIL</TableCell>
+                    <TableCell align="center"> Preço do Ingresso</TableCell>
+                    <TableCell align="center"> Tipo</TableCell>
                     <TableCell align="center"></TableCell>
                 </TableRow>
             </TableHead>
-            <TableBody>{ListIngressos}</TableBody>
+            <TableBody>{listIngressos}</TableBody>
         </Table>
       </TableContainer>
     </div>

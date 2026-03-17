@@ -6,11 +6,15 @@ import {
   CssBaseline,
   Box,
   Container,
-  Typography
+  Typography,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import api from "../../axios/axios";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 function Cadastro() {
   const [user, setUser] = useState({
@@ -19,25 +23,29 @@ function Cadastro() {
     telefone: "",
     cpf: "",
     email: "",
-    data_nascimento: ""
+    data_nascimento: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const togglePasswordVisibilit = () => {
+    setShowPassword(!showPassword);
+  };
 
   const onChange = (event) => {
     const { name, value } = event.target;
     setUser((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try{
-      const response = await api.postCadastro(user)
-      alert(response.data.message)
-    } catch (error){
-      alert(error.response.data.error)
-
+    try {
+      const response = await api.postCadastro(user);
+      alert(response.data.message);
+    } catch (error) {
+      alert(error.response.data.error);
     }
   };
 
@@ -49,7 +57,7 @@ function Cadastro() {
           marginTop: 8,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <Avatar sx={{ margin: 1, bgcolor: "green" }}>
@@ -79,6 +87,16 @@ function Cadastro() {
             name="senha"
             value={user.senha}
             onChange={onChange}
+            type={showPassword ? "text" : "password"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={togglePasswordVisibilit} edge="end">
+                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
 
           <TextField
@@ -130,7 +148,7 @@ function Cadastro() {
             Cadastrar
           </Button>
           <Button fullWidth variant="contained" component={Link} to="/">
-          Já possui conta? Faça Login
+            Já possui conta? Faça Login
           </Button>
         </Box>
       </Box>

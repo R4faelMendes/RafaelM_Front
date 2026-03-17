@@ -7,15 +7,19 @@ import {
   Box,
   Container,
   Typography,
+  InputAdornment,
+  IconButton
 } from "@mui/material";
 import LockOutlineIcon from "@mui/icons-material/LockOutline";
 import api from "../../axios/axios"
 import { Link,useNavigate } from "react-router-dom";
+import  VisibilityOffIcon  from "@mui/icons-material/VisibilityOff";
+import  VisibilityIcon  from "@mui/icons-material/Visibility";
 
 
 function Login() {
   const [user, setUser] = useState({ cpf: "", senha: "" });
-
+  const [showPassword,setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const onChange = (event) => {
@@ -24,11 +28,16 @@ function Login() {
     console.log(user);
   };
 
+  const togglePasswordVisibilit = ()=>{
+    setShowPassword(!showPassword);
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try{
       const response = await api.postLogin(user)
       alert("O servidor disse: " + response.data.message)
+      localStorage.setItem("auth","true")
       return navigate("home");
     } catch (error){
       alert("Erro: " + error.response)
@@ -78,6 +87,16 @@ function Login() {
             name="senha"
             value={user.senha}
             onChange={onChange}
+            type={showPassword?"text":"password"}
+            InputProps={{
+              endAdornment:(
+                <InputAdornment position="end">
+                  <IconButton onClick={togglePasswordVisibilit} edge="end">
+                    {showPassword?<VisibilityIcon/>:<VisibilityOffIcon/>}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
           />
           <Button type="submit" fullWidth sx={{ mt: 3, mb: 2 }}>
             ENTRAR

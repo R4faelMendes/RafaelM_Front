@@ -4,8 +4,17 @@ import Organizador from "../organizador/Organizador";
 import Ingresso from "../ingresso/Ingresso";
 import { Link,useNavigate } from "react-router-dom";
 function Home () {
+    const navigate = useNavigate();
+    const handleLogout = () =>{
+        localStorage.removeItem("auth")
+        navigate("/");
+    }
+
     return (
         <div>
+            <div>
+                <button onClick={handleLogout}>Logout</button>
+            </div>
             <h1 align="center">Tela Home</h1>
             <div><ListUsers/></div>
             <div><Link to={`/evento`}>Eventos</Link></div>

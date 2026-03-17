@@ -6,6 +6,9 @@ import Evento from "./pages/evento/Evento";
 import Organizador from "./pages/organizador/Organizador";
 import Ingresso from "./pages/ingresso/Ingresso";
 
+//Import Component
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+
 //Import das funções do router
 import { 
   BrowserRouter,
@@ -21,7 +24,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login/>}/>
           <Route path="/cadastro" element={<Cadastro/>}/>
-          <Route path="/home" element={<Home/>}/>
+          <Route path="/home" element={<ProtectedRoute><Home/></ProtectedRoute>}/>
           <Route path="/evento" element={<Evento/>}/>
           <Route path="/organizador" element={<Organizador/>}/>
           <Route path="/ingresso" element={<Ingresso/>}/>

@@ -1,29 +1,40 @@
-import ListUsers from "../../components/listUsers/ListUsuers";
-import Evento from "../evento/Evento";
-import Organizador from "../organizador/Organizador";
-import Ingresso from "../ingresso/Ingresso";
-import { Link,useNavigate } from "react-router-dom";
-function Home () {
-    const navigate = useNavigate();
-    const handleLogout = () =>{
-        localStorage.removeItem("auth")
-        navigate("/");
-    }
+import { Link } from "react-router-dom";
+import ListUsers from "../../components/listUsers/listUsers";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-    return (
-        <div>
-            <div>
-                <button onClick={handleLogout}>Logout</button>
-            </div>
-            <h1 align="center">Tela Home</h1>
-            <div><ListUsers/></div>
-            <div><Link to={`/evento`}>Eventos</Link></div>
-            <div><Link to={`/organizador`}>Organizador</Link></div>
-            <div><Link to={`/ingresso`}>Ingressos</Link></div>
+function Home() {
+  const navigate = useNavigate ();
+  const handleLogout = () => {
+    localStorage.removeItem("auth")
+    navigate("/")
+  }
 
-            
-        </div>//Pag Evento,pag organizador,pag ingresso
-    );
+  return (
+    
+    <div>
+      <div>
+        <Button onClick={handleLogout}>Logout</Button>
+      </div>
+      <h1 align="center">BEM-VINDO AO SISTEMA DE EVENTOS</h1>
+      <ListUsers/>
+
+      <Button fullWidth variant="contained" onClick={() => navigate("/evento")}>
+            Evento
+      </Button>
+
+      <Button fullWidth variant="contained" onClick={() => navigate("/ingresso")}>
+            ingresso
+      </Button>
+
+      <Button fullWidth variant="contained" onClick={() => navigate("/organizador")}>
+            organizador
+      </Button>
+
+      
+    
+    </div>
+  );
 }
 
 export default Home;

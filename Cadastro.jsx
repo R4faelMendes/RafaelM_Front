@@ -9,44 +9,40 @@ import {
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import api from "../../axios/axios";
-import { Link } from "react-router-dom";
-
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { useNavigate } from "react-router-dom";
-import { InputAdornment, IconButton } from "@mui/material";
 
 function Cadastro() {
   const [user, setUser] = useState({
-    cpf: "",
-    nome: "",
+    name: "",
+    password: "",
+    id: "",
     email: "",
-    senha: "",
-    telefone: "",
-    data_nascimento: "",
+    age: "",
+    phone: "",
+    city: "",
   });
-
-  const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   const onChange = (event) => {
     const { name, value } = event.target;
     setUser({ ...user, [name]: value });
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault(); // Evita o recarregamento da página
-    try {
-      const response = await api.postUSer(user);
-      alert(response.data.message);
-    } catch (error) {
-      alert(error.response.data.error);
-    }
+    alert(
+      "Aqui estão seus dados: \nName:" +
+        user.name +
+        " \nPassword:" +
+        user.password +
+        "\nId:" +
+        user.id +
+        "\nEmail:" +
+        user.email +
+        "\nAge:" +
+        user.age +
+        "\nPhone:" +
+        user.phone +
+        "\nCity:" +
+        user.city,
+    );
   };
 
   return (
@@ -70,10 +66,10 @@ function Cadastro() {
             margin="normal"
             required
             fullWidth
-            label="cpf"
-            id="cpf"
-            name="cpf"
-            value={user.cpf}
+            label="name"
+            id="name"
+            name="name"
+            value={user.name}
             onChange={onChange}
           />
 
@@ -81,10 +77,21 @@ function Cadastro() {
             margin="normal"
             required
             fullWidth
-            label="nome"
-            id="nome"
-            name="nome"
-            value={user.nome}
+            label="password"
+            id="password"
+            name="password"
+            value={user.password}
+            onChange={onChange}
+          />
+
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            label="id"
+            id="id"
+            name="id"
+            value={user.id}
             onChange={onChange}
           />
 
@@ -100,34 +107,13 @@ function Cadastro() {
           />
 
           <TextField
-            type={showPassword ? "text" : "password"}
             margin="normal"
             required
             fullWidth
-            label="senha"
-            id="senha"
-            name="senha"
-            value={user.senha}
-            onChange={onChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={togglePasswordVisibility} edge="end">
-                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="telefone"
-            id="telefone"
-            name="telefone"
-            value={user.telefone}
+            label="age"
+            id="age"
+            name="age"
+            value={user.age}
             onChange={onChange}
           />
 
@@ -135,19 +121,25 @@ function Cadastro() {
             margin="normal"
             required
             fullWidth
-            label="data_nascimento"
-            id="data_nascimento"
-            name="data_nascimento"
-            value={user.data_nascimento}
+            label="phone"
+            id="phone"
+            name="phone"
+            value={user.phone}
             onChange={onChange}
           />
 
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            label="city"
+            id="city"
+            name="city"
+            value={user.city}
+            onChange={onChange}
+          />
           <Button type="submit" fullWidth sx={{ mt: 3, mb: 2 }}>
             CADASTRAR
-          </Button>
-
-          <Button fullWidth variant="contained" component={Link} to={"/"}>
-            Já possui conta? Faça login
           </Button>
         </Box>
       </Box>

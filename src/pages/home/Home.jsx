@@ -1,39 +1,63 @@
-import { Link } from "react-router-dom";
 import ListUsers from "../../components/listUsers/listUsers";
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Button, Box, Typography } from "@mui/material";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Home() {
-  const navigate = useNavigate ();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const user = location.state?.usuario;
+
   const handleLogout = () => {
-    localStorage.removeItem("auth")
-    navigate("/")
-  }
+    localStorage.removeItem("auth");
+    navigate("/");
+  };
 
   return (
-    
-    <div>
-      <div>
-        <Button onClick={handleLogout}>Logout</Button>
-      </div>
-      <h1 align="center">BEM-VINDO AO SISTEMA DE EVENTOS</h1>
-      <ListUsers/>
-
-      <Button fullWidth variant="contained" onClick={() => navigate("/evento")}>
-            Evento
-      </Button>
-
-      <Button fullWidth variant="contained" onClick={() => navigate("/ingresso")}>
-            ingresso
-      </Button>
-
-      <Button fullWidth variant="contained" onClick={() => navigate("/organizador")}>
-            organizador
-      </Button>
-
+    <Box sx={{ padding: 3 }}>
       
-    
-    </div>
+      {/* Topo */}
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="outlined" color="error" onClick={handleLogout}>
+          Logout
+        </Button>
+      </Box>
+
+      {/* Título */}
+      <Typography variant="h4" align="center" sx={{ my: 3 }}>
+        Bem-vindo {user?.nome || "Usuário"}
+      </Typography>
+
+      {/* Lista */}
+      <ListUsers />
+
+      {/* Navegação */}
+      <Box sx={{ display: "flex", gap: 2, mt: 4 }}>
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={() => navigate("/evento")}
+        >
+          Evento
+        </Button>
+
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={() => navigate("/ingresso")}
+        >
+          Ingresso
+        </Button>
+
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={() => navigate("/organizador")}
+        >
+          Organizador
+        </Button>
+      </Box>
+    </Box>
   );
 }
 

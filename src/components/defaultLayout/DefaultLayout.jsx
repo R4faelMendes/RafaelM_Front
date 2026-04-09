@@ -7,7 +7,6 @@ function DefaultLayout({children}) {
 
     return(
         <Box sx={{display:"flex", flexDirection:"column", minHeight:"100vh"}}>
-            {/*Cabeçalhos */}
             <Header/>
 
             {/* Conteúdo do  site */}

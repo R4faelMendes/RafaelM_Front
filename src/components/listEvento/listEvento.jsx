@@ -21,7 +21,7 @@ import Paper from "@mui/material/Paper";
 import { Link } from "react-router-dom";
 
 function Evento() {
-  // constante criada para receber a lista usúario da nossa APIF
+  // constante criada para receber a lista usúario da nossa API
   const [events, setEvento] = useState([]);
   const [state, setState] = useState(0);
   //Contantes para controlar a exclusão de um usuário

@@ -1,5 +1,5 @@
 import HeaderAmbos from "../headerAmbos/HeaderAmbos";
-import FooterAmbos from "../footerAmbos/FooterAmbos"
+import FooterAmbos from "../footerAmbos/FooterAmbos";
 import { Box } from "@mui/material";
 
 

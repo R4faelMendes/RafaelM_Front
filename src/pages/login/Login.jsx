@@ -39,7 +39,7 @@ function Login() {
       const response = await api.postLogin(user);
       alert("O servidor disse:\n" + response.data.message);
       localStorage.setItem("auth", "true");
-      return navigate("/home");
+      return navigate("/home",{state: {usuario: response.data.user}});
     } catch (error) {
       alert(error.response.data.error);
     }

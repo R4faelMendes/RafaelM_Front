@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, IconButton } from "@mui/material";
+import { Button, IconButton, Alert, Snackbar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../axios/axios";
 import ConfirmDelete from "../dialogDelete/ConfirmDelete";
@@ -53,15 +53,17 @@ function Evento() {
 
   async function deleteEvento() {
     try {
-      await api.deleteEvento(eventToDelete.id_evento);
+      const response = await api.deleteEvento(eventToDelete.id_evento);
       setModalOpen(false);
       setEventToDelete(null);
       setState(state + 1);
+      showAlert("success",response.data.message);
+
     } catch (error) {
       setModalOpen(false);
       setEventToDelete(null);
       console.error("Erro ao deletar", error);
-      alert(error.response);
+      showAlert("error",error.response.data.error);
     }
   }
 
@@ -85,8 +87,34 @@ function Evento() {
     );
   });
 
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "",
+    message: "",
+  });
+
+  //Funcionalidade para exibir o alerta
+  const showAlert = (severity, message) => {
+    setAlert({ open: true, severity, message });
+  };
+
+  //Funcionalidade para fechar o alerta
+  const handleCloseAlert = () => {
+    setAlert({ ...alert, open: false });
+  };
+
   return (
     <div>
+      <Snackbar
+        open={alert.open}
+        autoHideDuration={3000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleCloseAlert} severity={alert.severity}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
       <ConfirmDelete
         open={modalOpen}
         onClose={() => setModalOpen(false)}

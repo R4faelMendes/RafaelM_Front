@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, IconButton } from "@mui/material";
+import { Button, IconButton, Alert, Snackbar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../axios/axios";
 
@@ -52,15 +52,15 @@ function ListUsers() {
 
   async function deleteUser() {
     try {
-      await api.deleteUser(userToDelete.cpf);
+      const response = await api.deleteUser(userToDelete.cpf);
       setModalOpen(false);
       setUserToDelete(null);
       setState(state + 1);
+      showAlert("success",response.data.message)
     } catch (error) {
       setModalOpen(false);
       setUserToDelete(null);
       console.error("Erro ao deletar", error);
-      alert(error.response.data.error);
     }
   }
 
@@ -79,13 +79,40 @@ function ListUsers() {
     );
   });
 
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "",
+    message: "",
+  });
+
+  //Funcionalidade para exibir o alerta
+  const showAlert = (severity, message) => {
+    setAlert({ open: true, severity, message });
+  };
+
+  //Funcionalidade para fechar o alerta
+  const handleCloseAlert = () => {
+    setAlert({ ...alert, open: false });
+  };
+
   return (
     <div>
+      <Snackbar
+        open={alert.open}
+        autoHideDuration={3000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleCloseAlert} severity={alert.severity}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
+
       <ConfirmDelete
-      open={modalOpen}
-      onClose={()=>setModalOpen(false)}
-      onConfirm={deleteUser}
-      userName={userToDelete?.name}
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={deleteUser}
+        userName={userToDelete?.name}
       />
       <TableContainer style={{ margin: "2px" }} component={Paper}>
         <Table size="small" aria-label="a dense table">

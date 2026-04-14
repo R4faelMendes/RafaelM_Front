@@ -7,6 +7,8 @@ import {
   Box,
   Container,
   Typography,
+  Alert,
+  Snackbar
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import api from "../../axios/axios";
@@ -43,14 +45,40 @@ function Cadastro() {
     event.preventDefault(); // Evita o recarregamento da página
     try {
       const response = await api.postUSer(user);
-      alert(response.data.message);
+      showAlert("success",response.data.message);
     } catch (error) {
-      alert(error.response.data.error);
+      showAlert("error",error.response.data.error);
     }
   };
 
+    const [alert, setAlert] = useState({
+      open: false,
+      severity: "",
+      message: "",
+    });
+  
+    //Funcionalidade para exibir o alerta
+    const showAlert = (severity, message) => {
+      setAlert({ open: true, severity, message });
+    };
+  
+    //Funcionalidade para fechar o alerta
+    const handleCloseAlert = () => {
+      setAlert({ ...alert, open: false });
+    };
+
   return (
     <Container component="main" maxWidth="xs">
+      <Snackbar
+        open={alert.open}
+        autoHideDuration={3000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleCloseAlert} severity={alert.severity}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
       <Box
         sx={{
           marginTop: 8,

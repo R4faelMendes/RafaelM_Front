@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { Link } from "react-router-dom";
-import { Button, IconButton } from "@mui/material";
+import { Button, IconButton,Alert,Snackbar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmDelete from "../dialogDelete/ConfirmDelete";
 
@@ -54,15 +54,16 @@ function Organizador() {
 
   async function deleteOrganizador(id_organizador) {
     try {
-      await api.deleteOrganizador(organizadorToDelete.id_organizador);
+      const response = await api.deleteOrganizador(organizadorToDelete.id_organizador);
       setModalOpen(false);
       setOrganizadorToDelete(null);
       setState(state + 1);
+      showAlert("success",response.data.message);
     } catch (error) {
       setModalOpen(false);
       setOrganizadorToDelete(null);
       console.error("Erro ao deletar", error);
-      alert(error.response);
+      showAlert("error",error.response.data.error);
     }
   }
 
@@ -84,8 +85,34 @@ function Organizador() {
     );
   });
 
+    const [alert, setAlert] = useState({
+      open: false,
+      severity: "",
+      message: "",
+    });
+  
+    //Funcionalidade para exibir o alerta
+    const showAlert = (severity, message) => {
+      setAlert({ open: true, severity, message });
+    };
+  
+    //Funcionalidade para fechar o alerta
+    const handleCloseAlert = () => {
+      setAlert({ ...alert, open: false });
+    };
+
   return (
     <div>
+      <Snackbar
+              open={alert.open}
+              autoHideDuration={3000}
+              onClose={handleCloseAlert}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+              <Alert onClose={handleCloseAlert} severity={alert.severity}>
+                {alert.message}
+              </Alert>
+            </Snackbar>
       <ConfirmDelete
         open={modalOpen}
         onClose={() => setModalOpen(false)}

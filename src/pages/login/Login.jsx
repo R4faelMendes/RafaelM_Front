@@ -9,6 +9,8 @@ import {
   Typography,
   InputAdornment,
   IconButton,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import LockOutlineIcon from "@mui/icons-material/LockOutline";
 import api from "../../axios/axios";
@@ -21,6 +23,7 @@ function Login() {
     cpf: "",
     senha: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const onChange = (event) => {
@@ -37,16 +40,43 @@ function Login() {
     event.preventDefault(); // Evita o recarregamento da página
     try {
       const response = await api.postLogin(user);
-      alert("O servidor disse:\n" + response.data.message);
+      showAlert("success",response.data.message);
       localStorage.setItem("auth", "true");
-      return navigate("/home",{state: {usuario: response.data.user}});
+      return navigate("/home", { state: { usuario: response.data.user } });
     } catch (error) {
-      alert(error.response.data.error);
+      showAlert("error",error.response.data.error);
     }
+  };
+
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "",
+    message: "",
+  });
+
+  //Funcionalidade para exibir o alerta
+  const showAlert = (severity, message) => {
+    setAlert({ open: true, severity, message });
+  };
+
+  //Funcionalidade para fechar o alerta
+  const handleCloseAlert = () => {
+    setAlert({ ...alert, open: false });
   };
 
   return (
     <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Snackbar
+        open={alert.open}
+        autoHideDuration={3000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleCloseAlert} severity={alert.severity}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
       <Box
         sx={{
           marginTop: 8,

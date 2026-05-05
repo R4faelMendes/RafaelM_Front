@@ -40,11 +40,11 @@ function Login() {
     event.preventDefault(); // Evita o recarregamento da página
     try {
       const response = await api.postLogin(user);
-      showAlert("success",response.data.message);
-      localStorage.setItem("auth", "true");
+      showAlert("success", response.data.message);
+      localStorage.setItem("token", response.data.token);
       return navigate("/home", { state: { usuario: response.data.user } });
     } catch (error) {
-      showAlert("error",error.response.data.error);
+      showAlert("error", error.response.data.error);
     }
   };
 

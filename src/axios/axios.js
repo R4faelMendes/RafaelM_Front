@@ -6,9 +6,20 @@ const api = axios.create({
         'accept':'application/json',},
 });
 
+api.interceptors.request.use(
+    async (config) => {
+        const token = localStorage.getItem('token')
+        if(token){
+            config.headers.Authorization = `${token}`
+        }
+        return config
+    },
+    (error) => Promise.reject(error)
+)
+
 const sheets = {
     postLogin: (user) => api.post("/login", user),
-    postUSer: (user) => api.post("/user", user),
+    postUser: (user) => api.post("/user", user), 
     getUsers:() => api.get("/user"),
     getEvento: () => api.get("/evento"),
     getIngresso: () => api.get("/ingresso"),

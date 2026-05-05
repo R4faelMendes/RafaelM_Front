@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -23,13 +23,25 @@ function Login() {
     cpf: "",
     senha: "",
   });
+  useEffect(() => {}, []);
+
+  const getRefreshToken = () => {
+    const messageToken = localStorage.getItem("refreshToken");
+    if (messageToken) {
+      showAlert("info", messageToken);
+    } else {
+    }
+  };
 
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const onChange = (event) => {
     const { name, value } = event.target;
-    setUser({ ...user, [name]: value });
-    console.log(user);
+
+    setUser((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const togglePasswordVisibility = () => {
@@ -42,6 +54,7 @@ function Login() {
       const response = await api.postLogin(user);
       showAlert("success", response.data.message);
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
       return navigate("/home", { state: { usuario: response.data.user } });
     } catch (error) {
       showAlert("error", error.response.data.error);
@@ -108,9 +121,9 @@ function Login() {
             margin="normal"
             required
             fullWidth
-            label="senha"
-            id="senha"
+            label="Senha"
             name="senha"
+            autoComplete="current-password"
             value={user.senha}
             onChange={onChange}
             InputProps={{
@@ -123,7 +136,13 @@ function Login() {
               ),
             }}
           />
-          <Button type="submit" fullWidth sx={{ mt: 3, mb: 2 }}>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            onClick={handleSubmit}
+            sx={{ mt: 3, mb: 2 }}
+          >
             ENTRAR
           </Button>
           <Button

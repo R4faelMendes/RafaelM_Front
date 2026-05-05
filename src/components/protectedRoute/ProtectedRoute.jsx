@@ -3,7 +3,7 @@ import DefaultLayout from "../defaultLayout/DefaultLayout";
 
 const ProtectedRoute = ({children})=> {
 
-    const isAuthenticated = localStorage.getItem("auth");;
+    const isAuthenticated = localStorage.getItem("token");;
     return isAuthenticated ? (<DefaultLayout>{children}</DefaultLayout>) : <Navigate to="/" />
 };
 

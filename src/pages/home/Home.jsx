@@ -6,10 +6,18 @@ function Home() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const user = location.state?.usuario;
+  // tenta pegar da navegação
+  let user = location.state?.usuario;
+
+  // fallback para localStorage (corrige problema ao dar refresh)
+  if (!user) {
+    const storedUser = localStorage.getItem("user");
+    user = storedUser ? JSON.parse(storedUser) : null;
+  }
 
   const handleLogout = () => {
-    localStorage.removeItem("auth");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/");
   };
 

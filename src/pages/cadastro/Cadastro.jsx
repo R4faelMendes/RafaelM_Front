@@ -3,21 +3,19 @@ import {
   TextField,
   Button,
   Avatar,
-  CssBaseline,
   Box,
   Container,
   Typography,
   Alert,
-  Snackbar
+  Snackbar,
+  InputAdornment,
+  IconButton
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import api from "../../axios/axios";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { useNavigate } from "react-router-dom";
-import { InputAdornment, IconButton } from "@mui/material";
 
 function Cadastro() {
   const [user, setUser] = useState({
@@ -32,40 +30,56 @@ function Cadastro() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "",
+    message: "",
+  });
+
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+    setShowPassword((prev) => !prev);
   };
 
+  // ✅ corrigido
   const onChange = (event) => {
     const { name, value } = event.target;
-    setUser({ ...user, [name]: value });
+
+    setUser((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const showAlert = (severity, message) => {
+    setAlert({ open: true, severity, message });
+  };
+
+  const handleCloseAlert = () => {
+    setAlert((prev) => ({ ...prev, open: false }));
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Evita o recarregamento da página
+    event.preventDefault();
+
     try {
-      const response = await api.postUSer(user);
-      showAlert("success",response.data.message);
+      const response = await api.postUser(user); // ✅ corrigido
+
+      showAlert("success", response.data.message || "Cadastro realizado!");
+
+      // 👉 opcional: redirecionar depois de cadastrar
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
+
     } catch (error) {
-      showAlert("error",error.response.data.error);
+      const msg =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        "Erro ao cadastrar";
+
+      showAlert("error", msg);
     }
   };
-
-    const [alert, setAlert] = useState({
-      open: false,
-      severity: "",
-      message: "",
-    });
-  
-    //Funcionalidade para exibir o alerta
-    const showAlert = (severity, message) => {
-      setAlert({ open: true, severity, message });
-    };
-  
-    //Funcionalidade para fechar o alerta
-    const handleCloseAlert = () => {
-      setAlert({ ...alert, open: false });
-    };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -75,10 +89,11 @@ function Cadastro() {
         onClose={handleCloseAlert}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={handleCloseAlert} severity={alert.severity}>
+        <Alert onClose={handleCloseAlert} severity={alert.severity} variant="filled">
           {alert.message}
         </Alert>
       </Snackbar>
+
       <Box
         sx={{
           marginTop: 8,
@@ -87,19 +102,21 @@ function Cadastro() {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ margin: 1, backgroundColor: "blue" }}>
+        <Avatar sx={{ margin: 1, bgcolor: "primary.main" }}>
           <AddIcon />
         </Avatar>
+
         <Typography component="h1" variant="h5">
           CADASTRO
         </Typography>
+
         <Box component="form" sx={{ mt: 1 }} onSubmit={handleSubmit} noValidate>
+          
           <TextField
             margin="normal"
             required
             fullWidth
-            label="cpf"
-            id="cpf"
+            label="CPF"
             name="cpf"
             value={user.cpf}
             onChange={onChange}
@@ -109,8 +126,7 @@ function Cadastro() {
             margin="normal"
             required
             fullWidth
-            label="nome"
-            id="nome"
+            label="Nome"
             name="nome"
             value={user.nome}
             onChange={onChange}
@@ -120,8 +136,7 @@ function Cadastro() {
             margin="normal"
             required
             fullWidth
-            label="email"
-            id="email"
+            label="Email"
             name="email"
             value={user.email}
             onChange={onChange}
@@ -132,15 +147,14 @@ function Cadastro() {
             margin="normal"
             required
             fullWidth
-            label="senha"
-            id="senha"
+            label="Senha"
             name="senha"
             value={user.senha}
             onChange={onChange}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={togglePasswordVisibility} edge="end">
+                  <IconButton onClick={togglePasswordVisibility}>
                     {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                   </IconButton>
                 </InputAdornment>
@@ -152,8 +166,7 @@ function Cadastro() {
             margin="normal"
             required
             fullWidth
-            label="telefone"
-            id="telefone"
+            label="Telefone"
             name="telefone"
             value={user.telefone}
             onChange={onChange}
@@ -163,18 +176,24 @@ function Cadastro() {
             margin="normal"
             required
             fullWidth
-            label="data_nascimento"
-            id="data_nascimento"
+            label="Data de nascimento"
             name="data_nascimento"
+            type="date"
+            InputLabelProps={{ shrink: true }}
             value={user.data_nascimento}
             onChange={onChange}
           />
 
-          <Button type="submit" fullWidth sx={{ mt: 3, mb: 2 }}>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
             CADASTRAR
           </Button>
 
-          <Button fullWidth variant="contained" component={Link} to={"/"}>
+          <Button fullWidth variant="outlined" component={Link} to="/">
             Já possui conta? Faça login
           </Button>
         </Box>

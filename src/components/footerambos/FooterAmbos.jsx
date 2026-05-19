@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
 import CodeIcon from "@mui/icons-material/Code";
-
+//
 function FooterAmbos() {
   return (
     <Box

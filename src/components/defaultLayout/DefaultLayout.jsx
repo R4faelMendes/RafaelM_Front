@@ -1,5 +1,5 @@
-import Header from "../header/Header";
-import Footer from "../footer/Footer";
+import HeaderAmbos from "../headerAmbos/HeaderAmbos";
+import FooterAmbos from "../footerAmbos/FooterAmbos";
 import { Box } from "@mui/material";
 
 
@@ -7,7 +7,7 @@ function DefaultLayout({children}) {
 
     return(
         <Box sx={{display:"flex", flexDirection:"column", minHeight:"100vh"}}>
-            <Header/>
+            <HeaderAmbos/>
 
             {/* Conteúdo do  site */}
             <Box sx={{
@@ -20,7 +20,7 @@ function DefaultLayout({children}) {
             {children}
             </Box>
             {/* Rodapé */}
-            <Footer/>
+            <FooterAmbos/>
         </Box>
     )
 }

@@ -9,10 +9,8 @@ import { CssBaseline } from "@mui/material";
 
 import DefaultLayoutIndex from "./components/defaultLayoutIndex/DefaultLayoutIndex";
 
-// Import Component
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 
-// Import das funções do router
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {

@@ -1,29 +1,33 @@
 import { useState, useEffect } from "react";
-import { Button, IconButton, Alert, Snackbar } from "@mui/material";
+import { IconButton, Alert, Snackbar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../axios/axios";
 
-// Imports para criação de tabela
 import Table from "@mui/material/Table";
 import TableContainer from "@mui/material/TableContainer";
-
-// TableHead é onde colocamos os titulos
 import TableHead from "@mui/material/TableHead";
-
-// TableBody é onde colocamos o conteúdo
 import TableBody from "@mui/material/TableBody";
-
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
 
 import ConfirmDelete from "../dialogDelete/ConfirmDelete";
 
+// Decodifica o JWT para extrair o CPF do usuário logado
+function getCpfFromToken() {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.cpf; // ajuste a chave conforme o payload do seu token
+  } catch {
+    return null;
+  }
+}
+
 function ListUsers() {
-  // Constante criada para receber a lista de usuários da nossa API
   const [users, setUser] = useState([]);
   const [state, setState] = useState(0);
-  // Constantes para controlar a exclusão de um usuário
   const [modalOpen, setModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
@@ -33,12 +37,10 @@ function ListUsers() {
     message: "",
   });
 
-  // Funcionalidade para exibir o alerta
   const showAlert = (severity, message) => {
     setAlert({ open: true, severity, message });
   };
 
-  // Funcionalidade para fechar o alerta
   const handleCloseAlert = () => {
     setAlert({ ...alert, open: false });
   };
@@ -48,11 +50,9 @@ function ListUsers() {
     setModalOpen(true);
   };
 
-  // Função para criar a chamada da API
   async function getUsers() {
     await api.getUsers().then(
       (response) => {
-        console.log(response);
         setUser(response.data.users);
       },
       (error) => {
@@ -60,6 +60,7 @@ function ListUsers() {
       },
     );
   }
+
   useEffect(() => {
     getUsers();
   }, [state]);
@@ -69,32 +70,36 @@ function ListUsers() {
       const response = await api.deleteUser(userToDelete.cpf);
       setModalOpen(false);
       showAlert("success", response.data.message);
+
+      // Só faz logout se o usuário deletou a própria conta
+      const loggedCpf = getCpfFromToken();
+      if (loggedCpf && loggedCpf === userToDelete.cpf) {
+        localStorage.removeItem("token");
+        window.location.href = "/";
+        return;
+      }
+
       setUserToDelete(null);
-      setState(state + 1);
+      setState((prev) => prev + 1);
     } catch (error) {
       setModalOpen(false);
       setUserToDelete(null);
       console.error("Erro ao deletar", error);
-      showAlert("error", error.response.data.error);
+      showAlert("error", error.response?.data?.error ?? "Erro ao deletar usuário");
     }
   }
 
-  const ListUsers = users.map((user) => {
-    // Para cada linha do meu array de users eu retorno um component
-    return (
-      <TableRow>
-        <TableCell align="center">{user.nome}</TableCell>
-        <TableCell align="center">{user.email}</TableCell>
-        <TableCell align="center">
-          <IconButton onClick={() => handleOpenModal(user)}>
-            <DeleteIcon color="error" />
-          </IconButton>
-        </TableCell>
-      </TableRow>
-    );
-  });
-
-  
+  const userRows = users.map((user) => (
+    <TableRow key={user.cpf}>
+      <TableCell align="center">{user.nome}</TableCell>
+      <TableCell align="center">{user.email}</TableCell>
+      <TableCell align="center">
+        <IconButton onClick={() => handleOpenModal(user)}>
+          <DeleteIcon color="error" />
+        </IconButton>
+      </TableCell>
+    </TableRow>
+  ));
 
   return (
     <div>
@@ -108,14 +113,16 @@ function ListUsers() {
           {alert.message}
         </Alert>
       </Snackbar>
+
       <ConfirmDelete
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onConfirm={deleteUser}
         targetName={userToDelete?.nome}
       />
+
       <TableContainer style={{ margin: "2px" }} component={Paper}>
-        <Table size="small" aria-label="">
+        <Table size="small" aria-label="lista de usuários">
           <TableHead style={{ backgroundColor: "red", borderStyle: "solid" }}>
             <TableRow>
               <TableCell align="center">NOME</TableCell>
@@ -123,10 +130,11 @@ function ListUsers() {
               <TableCell align="center"> </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{ListUsers}</TableBody>
+          <TableBody>{userRows}</TableBody>
         </Table>
       </TableContainer>
     </div>
   );
 }
+
 export default ListUsers;

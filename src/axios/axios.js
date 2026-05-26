@@ -20,11 +20,6 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    if(response.data.userDelete){
-        localStorage.removeItem("token");
-        localStorage.setItem("refreshToken", response.data.message);
-        window.location.href = "/";
-    }
     return Promise.resolve(response);
   },
   (error) => {
@@ -61,17 +56,17 @@ const sheets = {
   deleteEvento: (id_evento) => api.delete("/evento/" + id_evento),
 
   createEvento: (form, imagem) => {
-    const data = new FormData()
-    for(let key in form) data.append(key, form[key]);
-    if(imagem) data.append("imagem", imagem);
+    const data = new FormData();
+    for (let key in form) data.append(key, form[key]);
+    if (imagem) data.append("imagem", imagem);
 
     return api.post("/evento", data, {
-      headers:{
-        "Content-Type":"multipart/form-data",
-        Accept: "application/json"
-      }
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Accept: "application/json",
+      },
     });
-  }
+  },
 };
 
 export default sheets;

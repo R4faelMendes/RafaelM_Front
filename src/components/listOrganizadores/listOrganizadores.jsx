@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Button, IconButton, Alert, Snackbar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../axios/axios";
-import ConfirmDelete from "../dialogDelete/ConfirmDelete";
 
 // Imports para criação de tabela
 import Table from "@mui/material/Table";
@@ -18,29 +17,27 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
 
-import { Link } from "react-router-dom";
+import ConfirmDelete from "../dialogDelete/ConfirmDelete";
 
-function Evento() {
-  // constante criada para receber a lista usúario da nossa API
-  const [events, setEvento] = useState([]);
+function listOrganizadores() {
+  // Constante criada para receber a lista de usuários da nossa API
+  const [organizadores, setOrganizadores] = useState([]);
   const [state, setState] = useState(0);
-  //Contantes para controlar a exclusão de um usuário
-  const [modalOpen, setModalOpen] = useState(false);
-  const [eventToDelete, setEventToDelete] = useState(null);
 
-  const handleOpenModal = (evento) => {
-    setEventToDelete(evento);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [organizadorToDelete, setOrganizadorToDelete] = useState(null);
+
+  const handleOpenModal = (organizador) => {
+    setOrganizadorToDelete(organizador);
     setModalOpen(true);
   };
 
-  const handleConfirmDelete = async () => {};
-
-  //Função para criar a chama    getUsers();
-  async function getEvento() {
-    await api.getEvento().then(
+  // Função para criar a chamada da API
+  async function getOrganizadores() {
+    await api.getOrganizadores().then(
       (response) => {
         console.log(response);
-        setEvento(response.data.events);
+        setOrganizadores(response.data.organizadores);
       },
       (error) => {
         console.log(error);
@@ -48,38 +45,33 @@ function Evento() {
     );
   }
   useEffect(() => {
-    getEvento();
+    getOrganizadores();
   }, [state]);
 
-  async function deleteEvento() {
+  async function deleteOrganizador() {
     try {
-      const response = await api.deleteEvento(eventToDelete.id_evento);
+      const response = await api.deleteOrganizador(organizadorToDelete.id_organizador);
       setModalOpen(false);
-      setEventToDelete(null);
+      setOrganizadorToDelete(null);
+      showAlert("success", response.data.message);
       setState(state + 1);
-      showAlert("success",response.data.message);
-
     } catch (error) {
       setModalOpen(false);
-      setEventToDelete(null);
+      setOrganizadorToDelete(null);
       console.error("Erro ao deletar", error);
-      showAlert("error",error.response.data.error);
+      showAlert("error", error.response.data.error);
     }
   }
 
-  const listEvento = events.map((user) => {
+  const ListOrganizadores = organizadores.map((organizador) => {
     // Para cada linha do meu array de users eu retorno um component
     return (
       <TableRow>
-        <TableCell align="center">{user.nome}</TableCell>
-        <TableCell align="center">{user.descricao}</TableCell>
-        <TableCell align="center">{user.descricao}</TableCell>
-        <TableCell align="center">{user.data_hora}</TableCell>
-        <TableCell align="center">{user.local}</TableCell>
-        <TableCell align="center">{user.fk_id_organizador}</TableCell>
+        <TableCell align="center">{organizador.nome}</TableCell>
+        <TableCell align="center">{organizador.email}</TableCell>
+        <TableCell align="center">{organizador.telefone}</TableCell>
         <TableCell align="center">
-          {" "}
-          <IconButton onClick={() => handleOpenModal(user)}>
+          <IconButton onClick={() => handleOpenModal(organizador)}>
             <DeleteIcon color="error" />
           </IconButton>
         </TableCell>
@@ -93,12 +85,12 @@ function Evento() {
     message: "",
   });
 
-  //Funcionalidade para exibir o alerta
+  // Funcionalidade para exibir o alerta
   const showAlert = (severity, message) => {
     setAlert({ open: true, severity, message });
   };
 
-  //Funcionalidade para fechar o alerta
+  // Funcionalidade para fechar o alerta
   const handleCloseAlert = () => {
     setAlert({ ...alert, open: false });
   };
@@ -118,32 +110,23 @@ function Evento() {
       <ConfirmDelete
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        onConfirm={deleteEvento}
-        userName={eventToDelete?.nome}
+        onConfirm={deleteOrganizador}
+        targetName={organizadorToDelete?.nome}
       />
       <TableContainer style={{ margin: "2px" }} component={Paper}>
-        <Table size="small" aria-label="a dense table">
+        <Table size="small" aria-label="">
           <TableHead style={{ backgroundColor: "red", borderStyle: "solid" }}>
             <TableRow>
               <TableCell align="center">NOME</TableCell>
-              <TableCell align="center">descricao</TableCell>
-              <TableCell align="center">DATA HORA</TableCell>
-              <TableCell align="center">DATA LOCAL</TableCell>
-              <TableCell align="center">DATA FK ID ORGANIZADOR</TableCell>
-              <TableCell align="center">
-                <IconButton></IconButton>
-              </TableCell>
+              <TableCell align="center">EMAIL</TableCell>
+              <TableCell align="center">TELEFONE</TableCell>
+              <TableCell align="center">EXCLUIR</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{listEvento}</TableBody>
+          <TableBody>{ListOrganizadores}</TableBody>
         </Table>
-        <Button fullWidth variant="contained" component={Link} to={"/home"}>
-          voltar
-        </Button>
-
-        <Link to="/evento/novo">Criar Evento</Link>
       </TableContainer>
     </div>
   );
 }
-export default Evento;
+export default listOrganizadores;

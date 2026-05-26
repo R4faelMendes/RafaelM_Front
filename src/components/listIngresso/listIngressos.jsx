@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Button, IconButton, Alert, Snackbar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../axios/axios";
-import ConfirmDelete from "../dialogDelete/ConfirmDelete";
 
 // Imports para criação de tabela
 import Table from "@mui/material/Table";
@@ -18,12 +17,13 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
 
-import { Link } from "react-router-dom";
+import ConfirmDelete from "../dialogDelete/ConfirmDelete";
 
-function Ingresso() {
-  // constante criada para receber a lista usúario da nossa APIF
-  const [ingressos, setIngresso] = useState([]);
+function listIngressos() {
+  // Constante criada para receber a lista de usuários da nossa API
+  const [ingressos, setIngressos] = useState([]);
   const [state, setState] = useState(0);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [ingressoToDelete, setIngressoToDelete] = useState(null);
 
@@ -32,14 +32,12 @@ function Ingresso() {
     setModalOpen(true);
   };
 
-  const handleConfirmDelete = async () => {};
-
-  //Função para criar a chama    getUsers();
-  async function getIngresso() {
-    await api.getIngresso().then(
+  // Função para criar a chamada da API
+  async function getIngressos() {
+    await api.getIngressos().then(
       (response) => {
         console.log(response);
-        setIngresso(response.data.ingressos);
+        setIngressos(response.data.ingressos);
       },
       (error) => {
         console.log(error);
@@ -47,7 +45,7 @@ function Ingresso() {
     );
   }
   useEffect(() => {
-    getIngresso();
+    getIngressos();
   }, [state]);
 
   async function deleteIngresso() {
@@ -55,28 +53,25 @@ function Ingresso() {
       const response = await api.deleteIngresso(ingressoToDelete.id_ingresso);
       setModalOpen(false);
       setIngressoToDelete(null);
+      showAlert("success", response.data.message);
       setState(state + 1);
-      showAlert("success",response.data.message);
-
     } catch (error) {
       setModalOpen(false);
       setIngressoToDelete(null);
       console.error("Erro ao deletar", error);
-      showAlert("error",error.response.data.error);
-
+      showAlert("error", error.response.data.error);
     }
   }
-  const listIngresso = ingressos.map((user) => {
+
+  const ListIngressos = ingressos.map((ingresso) => {
     // Para cada linha do meu array de users eu retorno um component
     return (
       <TableRow>
-        <TableCell align="center">{user.id_ingresso}</TableCell>
-        <TableCell align="center">{user.preco}</TableCell>
-        <TableCell align="center">{user.tipo}</TableCell>
-        <TableCell align="center">{user.fk_id_evento}</TableCell>
-        <TableCell align="center">{user.nome_evento}</TableCell>
+        <TableCell align="center">{ingresso.preco}</TableCell>
+        <TableCell align="center">{ingresso.tipo}</TableCell>
+        <TableCell align="center">{ingresso.fk_id_evento}</TableCell>
         <TableCell align="center">
-          <IconButton onClick={() => handleOpenModal(user)}>
+          <IconButton onClick={() => handleOpenModal(ingresso)}>
             <DeleteIcon color="error" />
           </IconButton>
         </TableCell>
@@ -90,12 +85,12 @@ function Ingresso() {
     message: "",
   });
 
-  //Funcionalidade para exibir o alerta
+  // Funcionalidade para exibir o alerta
   const showAlert = (severity, message) => {
     setAlert({ open: true, severity, message });
   };
 
-  //Funcionalidade para fechar o alerta
+  // Funcionalidade para fechar o alerta
   const handleCloseAlert = () => {
     setAlert({ ...alert, open: false });
   };
@@ -116,30 +111,22 @@ function Ingresso() {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onConfirm={deleteIngresso}
-        userName={ingressoToDelete?.nome}
+        targetName={ingressoToDelete?.id_ingresso}
       />
       <TableContainer style={{ margin: "2px" }} component={Paper}>
-        <Table size="small" aria-label="a dense table">
+        <Table size="small" aria-label="">
           <TableHead style={{ backgroundColor: "red", borderStyle: "solid" }}>
             <TableRow>
-              <TableCell align="center">ID INGRESSO</TableCell>
               <TableCell align="center">PREÇO</TableCell>
               <TableCell align="center">TIPO</TableCell>
-              <TableCell align="center">FK ID INGRESSO</TableCell>
-              <TableCell align="center">NOME INGRESSO</TableCell>
-              <TableCell align="center">
-                <IconButton></IconButton>
-              </TableCell>
+              <TableCell align="center">ID DO EVENTO</TableCell>
+              <TableCell align="center">EXCLUIR</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{listIngresso}</TableBody>
+          <TableBody>{ListIngressos}</TableBody>
         </Table>
-
-        <Button fullWidth variant="contained" component={Link} to={"/home"}>
-          voltar
-        </Button>
       </TableContainer>
     </div>
   );
 }
-export default Ingresso;
+export default listIngressos;

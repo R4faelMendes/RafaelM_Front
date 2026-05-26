@@ -1,28 +1,28 @@
-import HeaderAmbos from "../headerAmbos/HeaderAmbos";
-import FooterAmbos from "../footerambos/FooterAmbos";
+import FooterIndex from "../footerIndex/FooterIndex";
+import HeaderIndex from "../headerIndex/HeaderIndex";
 import { Box } from "@mui/material";
 
-//Import
-function DefaultLayoutIndex({children}) {
-
+function DefaultLayoutIndex({children}){
     return(
         <Box sx={{display:"flex", flexDirection:"column", minHeight:"100vh"}}>
-            {/*Cabeçalhos */}
-            <HeaderAmbos/>
+            {/* Cabeçalho */}
+            <HeaderIndex/>
 
-            {/* Conteúdo do  site */}
+            {/* Conteúdo do site */}
             <Box sx={{
-                display:"flex",
-                flex:"1",
-                justifyContent:"center",
-                alignItems:"center",
-                padding:"20px"
+                display:"flex", 
+                flex: 1, 
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "20px",
             }}>
-            {children}
+                {children}
             </Box>
+
             {/* Rodapé */}
-            <FooterAmbos/>
+            <FooterIndex/>
         </Box>
     )
 }
+
 export default DefaultLayoutIndex;

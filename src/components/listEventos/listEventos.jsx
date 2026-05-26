@@ -19,13 +19,67 @@ import Paper from "@mui/material/Paper";
 
 import ConfirmDelete from "../dialogDelete/ConfirmDelete";
 
-function ListUsers() {
+function listEventos() {
   // Constante criada para receber a lista de usuários da nossa API
-  const [users, setUser] = useState([]);
+  const [eventos, setEventos] = useState([]);
   const [state, setState] = useState(0);
-  // Constantes para controlar a exclusão de um usuário
+
   const [modalOpen, setModalOpen] = useState(false);
-  const [userToDelete, setUserToDelete] = useState(null);
+  const [eventoToDelete, setEventoToDelete] = useState(null);
+
+  const handleOpenModal = (evento) => {
+    setEventoToDelete(evento);
+    setModalOpen(true);
+  };
+
+  // Função para criar a chamada da API
+  async function getEventos() {
+    await api.getEventos().then(
+      (response) => {
+        console.log(response);
+        setEventos(response.data.events);
+      },
+      (error) => {
+        console.log(error);
+      },
+    );
+  }
+  useEffect(() => {
+    getEventos();
+  }, [state]);
+
+  async function deleteEvento() {
+    try {
+      const response = await api.deleteEvento(eventoToDelete.id_evento);
+      setModalOpen(false);
+      setEventoToDelete(null);
+      showAlert("success", response.data.message);
+      setState(state + 1);
+    } catch (error) {
+      setModalOpen(false);
+      setEventoToDelete(null);
+      console.error("Erro ao deletar", error);
+      showAlert("error", error.response.data.error);
+    }
+  }
+
+  const ListEventos = eventos.map((evento) => {
+    // Para cada linha do meu array de users eu retorno um component
+    return (
+      <TableRow>
+        <TableCell align="center">{evento.nome}</TableCell>
+        <TableCell align="center">{evento.descricao}</TableCell>
+        <TableCell align="center">{evento.data_hora}</TableCell>
+        <TableCell align="center">{evento.local}</TableCell>
+        <TableCell align="center">{evento.nome_organizador}</TableCell>
+        <TableCell align="center">
+          <IconButton onClick={() => handleOpenModal(evento)}>
+            <DeleteIcon color="error" />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    );
+  });
 
   const [alert, setAlert] = useState({
     open: false,
@@ -43,59 +97,6 @@ function ListUsers() {
     setAlert({ ...alert, open: false });
   };
 
-  const handleOpenModal = (user) => {
-    setUserToDelete(user);
-    setModalOpen(true);
-  };
-
-  // Função para criar a chamada da API
-  async function getUsers() {
-    await api.getUsers().then(
-      (response) => {
-        console.log(response);
-        setUser(response.data.users);
-      },
-      (error) => {
-        console.log(error);
-      },
-    );
-  }
-  useEffect(() => {
-    getUsers();
-  }, [state]);
-
-  async function deleteUser() {
-    try {
-      const response = await api.deleteUser(userToDelete.cpf);
-      setModalOpen(false);
-      showAlert("success", response.data.message);
-      setUserToDelete(null);
-      setState(state + 1);
-    } catch (error) {
-      setModalOpen(false);
-      setUserToDelete(null);
-      console.error("Erro ao deletar", error);
-      showAlert("error", error.response.data.error);
-    }
-  }
-
-  const ListUsers = users.map((user) => {
-    // Para cada linha do meu array de users eu retorno um component
-    return (
-      <TableRow>
-        <TableCell align="center">{user.nome}</TableCell>
-        <TableCell align="center">{user.email}</TableCell>
-        <TableCell align="center">
-          <IconButton onClick={() => handleOpenModal(user)}>
-            <DeleteIcon color="error" />
-          </IconButton>
-        </TableCell>
-      </TableRow>
-    );
-  });
-
-  
-
   return (
     <div>
       <Snackbar
@@ -111,22 +112,25 @@ function ListUsers() {
       <ConfirmDelete
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        onConfirm={deleteUser}
-        targetName={userToDelete?.nome}
+        onConfirm={deleteEvento}
+        targetName={eventoToDelete?.nome}
       />
       <TableContainer style={{ margin: "2px" }} component={Paper}>
         <Table size="small" aria-label="">
           <TableHead style={{ backgroundColor: "red", borderStyle: "solid" }}>
             <TableRow>
               <TableCell align="center">NOME</TableCell>
-              <TableCell align="center">EMAIL</TableCell>
-              <TableCell align="center"> </TableCell>
+              <TableCell align="center">DESCRIÇÃO</TableCell>
+              <TableCell align="center">DATA E HORA</TableCell>
+              <TableCell align="center">LOCAL</TableCell>
+              <TableCell align="center">NOME DO ORGANIZADOR</TableCell>
+              <TableCell align="center">EXCLUIR</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{ListUsers}</TableBody>
+          <TableBody>{ListEventos}</TableBody>
         </Table>
       </TableContainer>
     </div>
   );
 }
-export default ListUsers;
+export default listEventos;

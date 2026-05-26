@@ -12,83 +12,84 @@ import {
   Alert,
   Snackbar,
 } from "@mui/material";
-import LockOutlineIcon from "@mui/icons-material/LockOutline";
+import LockClockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
 import api from "../../axios/axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; 
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityIcon from "@mui/icons-material/Visibility"
 
 function Login() {
   const [user, setUser] = useState({
-    cpf: "",
-    senha: "",
+    cpf: "", 
+    senha: ""
   });
-  useEffect(() => {}, []);
 
-  const getRefreshToken = () => {
-    const messageToken = localStorage.getItem("refreshToken");
-    if (messageToken) {
+  useEffect(()=>{
+    getRefreshToken();
+  }, []);
+
+  const getRefreshToken = () =>{
+    const messageToken = localStorage.getItem('refreshToken');
+    if(messageToken){
       showAlert("info", messageToken);
-    } else {
     }
-  };
+    else{}
+  }
 
   const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
-  const onChange = (event) => {
-    const { name, value } = event.target;
 
-    setUser((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const onChange = (event) =>{
+    const {name, value} = event.target;
+    setUser({...user,[name]:value});
+    console.log(user);
+  }
 
-  const togglePasswordVisibility = () => {
+  const togglePasswordVisibility = ()=> {
     setShowPassword(!showPassword);
-  };
+  }
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event) =>{
     event.preventDefault(); // Evita o recarregamento da página
     try {
-      const response = await api.postLogin(user);
+      const response = await api.postLogin(user)
       showAlert("success", response.data.message);
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      return navigate("/home", { state: { usuario: response.data.user } });
+      return navigate('home',{state: {usuario: response.data.user}});
     } catch (error) {
       showAlert("error", error.response.data.error);
     }
-  };
+  }
 
-  const [alert, setAlert] = useState({
+  const [alert, setAlert] =useState({
     open: false,
     severity: "",
-    message: "",
+    message: ""
   });
 
-  //Funcionalidade para exibir o alerta
-  const showAlert = (severity, message) => {
+  // Funcionalidade para exibir o alerta
+  const showAlert = (severity, message)=>{
     setAlert({ open: true, severity, message });
-  };
+  }
 
-  //Funcionalidade para fechar o alerta
+  // Funcionalidade para fechar o alerta
   const handleCloseAlert = () => {
-    setAlert({ ...alert, open: false });
-  };
+    setAlert({...alert, open:false});
+  }
 
   return (
     <Container component="main" maxWidth="xs">
-      <CssBaseline />
+      <CssBaseline/>
       <Snackbar
-        open={alert.open}
-        autoHideDuration={3000}
-        onClose={handleCloseAlert}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert onClose={handleCloseAlert} severity={alert.severity}>
-          {alert.message}
-        </Alert>
+       open={alert.open} 
+       autoHideDuration={3000} 
+       onClose={handleCloseAlert} 
+       anchorOrigin={{vertical: "top", horizontal: "center"}}>
+        <Alert 
+        onClose={handleCloseAlert} 
+        severity={alert.severity}
+        >{alert.message}</Alert>
       </Snackbar>
       <Box
         sx={{
@@ -99,17 +100,23 @@ function Login() {
         }}
       >
         <Avatar sx={{ margin: 1, backgroundColor: "blue" }}>
-          <LockOutlineIcon />
+          <LockClockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          LOGIN
+          Welcome to Terceirão
         </Typography>
-        <Box component="form" sx={{ mt: 1 }} onSubmit={handleSubmit} noValidate>
+        {/* marginTop:*/}
+        <Box
+          component="form"
+          sx={{ mt: 1 }}
+          onSubmit={handleSubmit}
+          noValidate
+        >
           <TextField
             margin="normal"
             required
             fullWidth
-            label="cpf"
+            label="CPF"
             id="cpf"
             name="cpf"
             value={user.cpf}
@@ -117,41 +124,32 @@ function Login() {
           />
 
           <TextField
-            type={showPassword ? "text" : "password"}
             margin="normal"
             required
             fullWidth
             label="Senha"
+            id="senha"
             name="senha"
-            autoComplete="current-password"
             value={user.senha}
             onChange={onChange}
+            type={showPassword? "text":"password"}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={togglePasswordVisibility} edge="end">
-                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                  </IconButton>
+                <InputAdornment>
+                <IconButton onClick={togglePasswordVisibility} edge="end">
+                  {showPassword?<VisibilityIcon/>:<VisibilityOffIcon/>}
+                </IconButton>
                 </InputAdornment>
-              ),
+              )
             }}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            onClick={handleSubmit}
-            sx={{ mt: 3, mb: 2 }}
-          >
-            ENTRAR
+
+          <Button type="submit" fullWidth sx={{ mt: 3, mb: 2 }}>
+            Entrar
           </Button>
-          <Button
-            fullWidth
-            variant="contained"
-            component={Link}
-            to={"/cadastro"}
-          >
-            Faça o seu cadastro
+
+          <Button fullWidth variant="contained" component={Link} to="/cadastro">
+            Faça seu cadastro
           </Button>
         </Box>
       </Box>

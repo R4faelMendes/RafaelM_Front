@@ -1,72 +1,46 @@
-import ListUsers from "../../components/listUsers/listUsers";
-import { Button, Box, Typography } from "@mui/material";
+import ListUsers from "../../components/listUsers/ListUsers";
+import { Button } from "@mui/material";
+import { Link} from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 
-function Home() {
-  const navigate = useNavigate();
-  const location = useLocation();
+function Home(){
+    const navigate = useNavigate()
 
-  // tenta pegar da navegação
-  let user = location.state?.usuario;
+    const handleLogout = ()=> {
+        localStorage.removeItem("token")
+        navigate("/");
+    }
 
-  // fallback para localStorage (corrige problema ao dar refresh)
-  if (!user) {
-    const storedUser = localStorage.getItem("user");
-    user = storedUser ? JSON.parse(storedUser) : null;
-  }
+    // const location = useLocation();
+    // const user = location.state.usuario;
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/");
-  };
+    return(
+        <div>
+            {/* <h1>Bem-vindo {user?.nome}!!</h1> */}
+            <h1>Bem-vindo!!</h1>
 
-  return (
-    <Box sx={{ padding: 3 }}>
-      
-      {/* Topo */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button variant="outlined" color="error" onClick={handleLogout}>
-          Logout
-        </Button>
-      </Box>
+            <Button fullWidth onClick={handleLogout}>
+                sair
+            </Button>
 
-      {/* Título */}
-      <Typography variant="h4" align="center" sx={{ my: 3 }}>
-        Bem-vindo {user?.nome || "Usuário"}
-      </Typography>
+            <br />
+            <br />
+            
+            <nav>
+                <Button fullWidth variant="contained" onClick={()=> {navigate("/organizador")}}>Organizador</Button>
+                <br />
+                <br />
+                <Button fullWidth variant="contained" onClick={()=> {navigate("/eventos")}}>Eventos</Button>
+                <br />
+                <br />
+                <Button fullWidth variant="contained" onClick={()=> {navigate("/ingressos")}}>Ingressos</Button>
+                <br />
+                <br />
+            </nav>
 
-      {/* Lista */}
-      <ListUsers />
-
-      {/* Navegação */}
-      <Box sx={{ display: "flex", gap: 2, mt: 4 }}>
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={() => navigate("/evento")}
-        >
-          Evento
-        </Button>
-
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={() => navigate("/ingresso")}
-        >
-          Ingresso
-        </Button>
-
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={() => navigate("/organizador")}
-        >
-          Organizador
-        </Button>
-      </Box>
-    </Box>
-  );
+            <ListUsers/>
+        </div>
+    )
 }
 
 export default Home;

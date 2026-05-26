@@ -67,6 +67,15 @@ function listEventos() {
     // Para cada linha do meu array de users eu retorno um component
     return (
       <TableRow>
+        <TableCell align="center">
+          {evento.id_evento && (
+            <img
+              src={`http://localhost:5000/api/v1/evento/imagem/${evento.id_evento}`}
+              alt="imagem do evento"
+              style={{ width: "80px", height: "80px", objectFit: "cover" }}
+            />
+          )}
+        </TableCell>
         <TableCell align="center">{evento.nome}</TableCell>
         <TableCell align="center">{evento.descricao}</TableCell>
         <TableCell align="center">{evento.data_hora}</TableCell>
@@ -119,6 +128,7 @@ function listEventos() {
         <Table size="small" aria-label="">
           <TableHead style={{ backgroundColor: "red", borderStyle: "solid" }}>
             <TableRow>
+              <TableCell align="center">IMAGEM</TableCell>
               <TableCell align="center">NOME</TableCell>
               <TableCell align="center">DESCRIÇÃO</TableCell>
               <TableCell align="center">DATA E HORA</TableCell>

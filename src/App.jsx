@@ -7,6 +7,7 @@ import Eventos from "./pages/eventos/Eventos";
 import Ingresso from "./pages/ingresso/Ingressos";
 import AdicionarIngressos from "./pages/addIngresso/adicionarIngresso";
 import CreateEvent from "./pages/addEvento/createEvento";
+import listEventos from "./components/listEventos/listEventos";
 
 // Import Component
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
@@ -85,6 +86,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
         </Routes>
       </BrowserRouter>
     </div>

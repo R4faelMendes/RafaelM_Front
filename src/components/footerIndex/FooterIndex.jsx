@@ -15,7 +15,7 @@ export default function FooterIndex() {
         alignItems: "center"
       }}
     >
-        <p>&copy; Desenvolvido por Vinícius Soares Peroni</p>
+        <p>&copy; Desenvolvido por Rafael Mendes</p>
     </Box>
   );
 }
